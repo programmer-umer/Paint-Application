@@ -34,6 +34,8 @@ window.fill(WHITE)
 CANVAS = pygame.Rect(75, 0, WIDTH-75, HEIGHT)
 CANVAS_SURFACE = window.subsurface(CANVAS)
 
+pm_x, pm_y = 0, 0
+
 class Button:
     def __init__(self, x, y, width, height):
         self.x = x
@@ -96,13 +98,18 @@ def colors_buttons(window):
     pygame.draw.rect(window, WHITE, pygame.Rect(eraser.x, eraser.y, eraser.width, eraser.height))
     pygame.draw.rect(window, BLACK, pygame.Rect(save.x, save.y, save.width, save.height))
     window.blit(save_text, (save.x+6, save.y+7))
+
 def brush(window, radius, color):
+    global pm_x, pm_y
     mouse_x, mouse_y = pygame.mouse.get_pos()
     if not menu.clicked():    
         pygame.draw.circle(window, color, (mouse_x, mouse_y), radius)
+        pygame.draw.line(window, color, (pm_x, pm_y), (mouse_x, mouse_y), radius*2 + 5)
+        pm_x, pm_y = mouse_x, mouse_y
+        
 
 def main():
-    global radius_of_brush
+    global radius_of_brush, pm_x, pm_y
     a = 0
     color = BLACK
     run = True
@@ -111,6 +118,8 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN:
+                pm_x, pm_y = event.pos[0], event.pos[1]
+
                 if px10_button.clicked():
                     radius_of_brush = 10
                 if px30_button.clicked():
